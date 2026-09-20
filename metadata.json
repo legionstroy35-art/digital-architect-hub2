@@ -1,0 +1,6 @@
+{
+  "name": "Цифровой хаб архитектора",
+  "description": "Официальный портал сообщества «Цифровой хаб архитектора»: бесплатные плагины для Revit, AutoCAD, Archicad и Twinmotion, база знаний, видеоуроки на Rutube, VK, Дзен и закрытые курсы на Boosty.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

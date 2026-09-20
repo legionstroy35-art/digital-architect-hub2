@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <!-- Crisp Architectural Monogram: M, P, S -->
+  <defs>
+    <!-- Sharp clean woodcut crosshatch pattern without any blur or filter -->
+    <pattern id="sharpHatch" width="8" height="8" patternTransform="rotate(-25 0 0)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#111827" stroke-width="1.8" />
+    </pattern>
+    <pattern id="sharpHatchWhite" width="8" height="8" patternTransform="rotate(-25 0 0)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#FFFFFF" stroke-width="1.8" />
+    </pattern>
+  </defs>
+
+  <g id="monogram" transform="translate(0, 0)">
+    <!-- Back Flourish Loop of Letter S / Ribbon (Deep rich black) -->
+    <path d="M 140,80 C 85,85 50,135 55,205 C 60,270 105,300 155,310 C 95,335 60,390 85,445 C 110,490 185,495 230,465 C 260,440 270,410 260,385 C 250,360 215,370 190,395 C 165,420 125,410 120,370 C 115,325 160,290 210,270 C 250,255 275,230 260,195 C 245,160 205,170 180,190 C 155,210 120,200 115,165 C 110,130 140,110 170,105 Z" 
+          fill="#090D16" stroke="#090D16" stroke-width="2" />
+    
+    <!-- Inner Ribbon highlight for S -->
+    <path d="M 140,95 C 95,100 70,140 75,195 C 80,250 118,280 160,292 C 105,320 78,375 100,425 C 122,465 180,472 218,445 C 242,425 250,402 242,385 C 235,368 210,375 190,392 C 170,410 135,400 130,370 C 125,330 165,298 212,278" 
+          fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" />
+
+    <!-- Right Outer Flourish of S -->
+    <path d="M 320,105 C 390,120 430,170 425,235 C 420,300 370,335 315,350 C 375,375 415,425 395,480 C 375,525 300,525 250,495 C 215,470 210,435 228,415 C 245,395 275,410 295,432 C 315,455 350,450 360,420 C 370,375 325,345 275,330" 
+          fill="none" stroke="#090D16" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 320,105 C 390,120 430,170 425,235 C 420,300 370,335 315,350 C 375,375 415,425 395,480 C 375,525 300,525 250,495 C 215,470 210,435 228,415 C 245,395 275,410 295,432 C 315,455 350,450 360,420 C 370,375 325,345 275,330" 
+          fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" />
+
+    <!-- Main Architectural Letter M -->
+    <path d="M 95,395 L 95,415 C 115,415 135,400 142,370 L 175,145 C 182,115 162,105 145,105 L 125,105 L 125,85 L 205,85 L 205,105 C 185,105 175,115 170,140 L 145,315 L 230,165 C 240,145 245,138 245,120 C 245,105 232,105 220,105 L 220,85 L 295,85 L 295,105 C 275,105 262,115 255,140 L 225,320 L 255,375 C 268,400 280,415 300,415 L 300,435 L 220,435 L 220,415 C 238,415 245,402 238,382 L 212,340 L 170,415 C 160,432 148,435 125,435 L 85,435 L 85,415 C 90,415 93,408 95,395 Z" 
+          fill="#090D16" stroke="#090D16" stroke-width="3" stroke-linejoin="round" />
+    
+    <!-- Letter M Engraving Hatching & Inset lines -->
+    <path d="M 155,145 L 138,295 L 148,300 L 165,150 Z" fill="#FFFFFF" />
+    <!-- Center V strokes of M -->
+    <polygon points="178,130 230,235 282,130 260,130 230,198 200,130" fill="#090D16" />
+    <line x1="230" y1="130" x2="230" y2="205" stroke="#FFFFFF" stroke-width="4" stroke-dasharray="5 4" />
+
+    <!-- Ornate Letter P (Foreground Right) -->
+    <!-- Vertical Master Stem of P -->
+    <path d="M 275,175 L 315,175 C 328,175 335,168 335,150 L 335,130 L 360,130 L 360,420 C 360,445 348,458 322,458 L 305,458 L 305,478 L 405,478 L 405,458 L 385,458 C 368,458 360,440 360,420 L 360,330 C 392,330 435,325 455,280 C 470,245 460,188 422,155 C 398,135 365,130 335,130 L 275,130 Z" 
+          fill="#090D16" stroke="#090D16" stroke-width="4" stroke-linejoin="round" />
+
+    <!-- Fine Woodcut Engraved Hatching Lines along P Stem -->
+    <g stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round">
+      <line x1="338" y1="150" x2="358" y2="150" />
+      <line x1="338" y1="162" x2="358" y2="162" />
+      <line x1="338" y1="174" x2="358" y2="174" />
+      <line x1="338" y1="186" x2="358" y2="186" />
+      <line x1="338" y1="198" x2="358" y2="198" />
+      <line x1="338" y1="210" x2="358" y2="210" />
+      <line x1="338" y1="222" x2="358" y2="222" />
+      <line x1="338" y1="234" x2="358" y2="234" />
+      <line x1="338" y1="246" x2="358" y2="246" />
+      <line x1="338" y1="258" x2="358" y2="258" />
+      <line x1="338" y1="270" x2="358" y2="270" />
+      <line x1="338" y1="282" x2="358" y2="282" />
+      <line x1="338" y1="294" x2="358" y2="294" />
+      <line x1="338" y1="306" x2="358" y2="306" />
+      <line x1="338" y1="318" x2="358" y2="318" />
+      <line x1="338" y1="330" x2="358" y2="330" />
+      <line x1="338" y1="342" x2="358" y2="342" />
+      <line x1="338" y1="354" x2="358" y2="354" />
+      <line x1="338" y1="366" x2="358" y2="366" />
+      <line x1="338" y1="378" x2="358" y2="378" />
+      <line x1="338" y1="390" x2="358" y2="390" />
+      <line x1="338" y1="402" x2="358" y2="402" />
+      <line x1="338" y1="414" x2="358" y2="414" />
+      <line x1="338" y1="426" x2="358" y2="426" />
+      <line x1="338" y1="438" x2="358" y2="438" />
+    </g>
+
+    <!-- P Loop Opening (Hollow Bowl) -->
+    <path d="M 362,160 C 390,160 425,178 425,230 C 425,280 390,300 362,300 Z" 
+          fill="#FFFFFF" stroke="#090D16" stroke-width="5" />
+    <path d="M 365,172 C 385,172 410,188 410,230 C 410,270 385,288 365,288 Z" 
+          fill="none" stroke="#090D16" stroke-width="2.5" stroke-dasharray="4 4" />
+
+    <!-- Foreground Sweeping Calligraphic Ribbon S crossing M and P -->
+    <path d="M 175,300 C 195,260 230,230 275,230 C 305,230 320,248 310,272 C 300,298 275,322 245,355 C 205,392 180,442 210,480 C 235,512 292,505 318,462 C 330,438 325,418 310,418 C 298,418 290,430 285,442 C 272,468 242,468 230,450 C 218,425 230,388 268,342 C 305,300 338,268 340,230 C 342,185 305,172 268,180 C 218,185 178,230 155,280 Z" 
+          fill="#090D16" stroke="#FFFFFF" stroke-width="4" stroke-linejoin="round" />
+
+    <!-- Center Calligraphic flourishes -->
+    <path d="M 245,250 C 258,225 282,225 288,245 C 295,265 270,290 245,315" 
+          fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
+  </g>
+</svg>
