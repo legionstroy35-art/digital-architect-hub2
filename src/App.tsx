@@ -15,8 +15,14 @@ import { AdminLoginModal } from './components/AdminLoginModal';
 import { VideoModal } from './components/VideoModal';
 import { CourseDetailModal } from './components/CourseDetailModal';
 import { ResourceItem, CourseTrack } from './types';
-import { getStoredCourses } from './services/contentManager';
+import {
+  getStoredCourses,
+  getStoredGoogleSheetUrl,
+  syncWithGoogleSheet,
+  loadHostingConfigAndData
+} from './services/contentManager';
 import { isAdminLoggedIn, logoutAdmin, subscribeToAdminAuth } from './services/adminAuth';
+import { SITE_CONFIG } from './config/siteConfig';
 
 export default function App() {
   const [selectedResource, setSelectedResource] = useState<ResourceItem | null>(null);
@@ -66,6 +72,59 @@ export default function App() {
     handleHashCheck();
     window.addEventListener('hashchange', handleHashCheck);
     return () => window.removeEventListener('hashchange', handleHashCheck);
+  }, []);
+
+  // Background auto-sync and periodic polling (ensures all visitors across browsers see fresh data)
+  useEffect(() => {
+    let isCancelled = false;
+
+    const performSync = async () => {
+      const url = getStoredGoogleSheetUrl();
+      if (url) {
+        try {
+          await syncWithGoogleSheet(url, 'merge');
+        } catch (err) {
+          console.warn('Auto-sync from sheet error:', err);
+        }
+      }
+    };
+
+    const initData = async () => {
+      // 1. Load config/data from hosting if available (/site-config.json or /site-data.json)
+      await loadHostingConfigAndData();
+      if (isCancelled) return;
+
+      // 2. Initial sync from Google Sheets if configured
+      if (SITE_CONFIG.enableAutoFetchOnLoad) {
+        await performSync();
+      }
+    };
+
+    initData();
+
+    // 3. Periodic Background Polling (updates catalog automatically without page reload)
+    const intervalSeconds = SITE_CONFIG.autoRefreshIntervalSeconds || 60;
+    const intervalMs = Math.max(30, intervalSeconds) * 1000;
+    const timerId = setInterval(() => {
+      performSync();
+    }, intervalMs);
+
+    // 4. Tab focus revalidation: when visitor switches back to the tab, check for fresh data
+    let lastFocusSync = Date.now();
+    const handleWindowFocus = () => {
+      if (SITE_CONFIG.refreshOnWindowFocus && Date.now() - lastFocusSync > 25000) {
+        lastFocusSync = Date.now();
+        performSync();
+      }
+    };
+
+    window.addEventListener('focus', handleWindowFocus);
+
+    return () => {
+      isCancelled = true;
+      clearInterval(timerId);
+      window.removeEventListener('focus', handleWindowFocus);
+    };
   }, []);
 
   const handleOpenAdmin = (tab: 'sheet' | 'plugins' | 'courses' | 'waitlist' = 'sheet') => {

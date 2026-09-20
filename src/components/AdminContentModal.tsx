@@ -53,7 +53,11 @@ import {
   syncWithGoogleSheet,
   resetContentToDefault,
   getFlagshipPluginId,
-  setFlagshipPluginId
+  setFlagshipPluginId,
+  getPluginsAsSheetTSV,
+  getCoursesAsSheetTSV,
+  exportSiteDataJsonFile,
+  exportSiteConfigJsonFile
 } from '../services/contentManager';
 import {
   getNotificationSettings,
@@ -108,6 +112,8 @@ export const AdminContentModal: React.FC<AdminContentModalProps> = ({
 
   // Sync loading & messages
   const [isSyncing, setIsSyncing] = useState(false);
+  const [syncMode, setSyncMode] = useState<'merge' | 'replace'>('merge');
+  const [copiedAllPluginsTSV, setCopiedAllPluginsTSV] = useState(false);
   const [syncStatus, setSyncStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({
     type: null,
     message: ''
@@ -185,11 +191,18 @@ export const AdminContentModal: React.FC<AdminContentModalProps> = ({
     }
   };
 
+  const handleCopyAllPluginsTSV = () => {
+    const tsv = getPluginsAsSheetTSV();
+    navigator.clipboard.writeText(tsv);
+    setCopiedAllPluginsTSV(true);
+    setTimeout(() => setCopiedAllPluginsTSV(false), 3000);
+  };
+
   const handleSyncGoogleSheet = async () => {
     setIsSyncing(true);
     setSyncStatus({ type: null, message: '' });
 
-    const res = await syncWithGoogleSheet(sheetUrl);
+    const res = await syncWithGoogleSheet(sheetUrl, syncMode);
     setIsSyncing(false);
 
     if (res.success) {
@@ -780,15 +793,76 @@ export const AdminContentModal: React.FC<AdminContentModalProps> = ({
                       <button
                         onClick={handleSyncGoogleSheet}
                         disabled={isSyncing || !sheetUrl}
-                        className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition-colors"
+                        className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer"
                       >
                         <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
                         <span>{isSyncing ? 'Синхронизация...' : 'Синхронизировать'}</span>
                       </button>
                     </div>
 
+                    {/* Mode Selector */}
+                    <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                      <div className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                        <span>Режим загрузки:</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setSyncMode('merge')}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer border ${
+                            syncMode === 'merge'
+                              ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                              : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+                          }`}
+                        >
+                          Объединять (сохранять старые)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSyncMode('replace')}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer border ${
+                            syncMode === 'replace'
+                              ? 'bg-amber-600 text-white border-amber-600 shadow-xs'
+                              : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
+                          }`}
+                        >
+                          Заменять полностью
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Quick Tools: Copy all plugins into TSV & Restore */}
+                    <div className="flex flex-wrap items-center gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={handleCopyAllPluginsTSV}
+                        className="text-xs text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 font-semibold py-1.5 px-3 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
+                        title="Скопировать все текущие плагины в буфер обмена для вставки прямо в Google Таблицу через Ctrl+V"
+                      >
+                        {copiedAllPluginsTSV ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-blue-600" />}
+                        <span>{copiedAllPluginsTSV ? 'Данные скопированы!' : 'Скопировать все плагины для Google Таблицы (Ctrl+V)'}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (window.confirm('Восстановить исходные 5 плагинов AutoCAD и стандартные курсы?')) {
+                            resetContentToDefault();
+                            setPlugins(getStoredPlugins());
+                            setCourses(getStoredCourses());
+                            setSyncStatus({ type: 'success', message: 'Каталог успешно сброшен к исходным 5 плагинам!' });
+                          }
+                        }}
+                        className="text-xs text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 font-semibold py-1.5 px-3 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>Вернуть исходные 5 плагинов</span>
+                      </button>
+                    </div>
+
                     {lastSync && (
-                      <p className="text-[11px] font-mono text-slate-500 flex items-center gap-1.5">
+                      <p className="text-[11px] font-mono text-slate-500 flex items-center gap-1.5 pt-1">
                         <Clock className="w-3.5 h-3.5 text-blue-600" />
                         <span>Последняя успешная синхронизация: {lastSync}</span>
                       </p>
@@ -807,6 +881,68 @@ export const AdminContentModal: React.FC<AdminContentModalProps> = ({
                         <span>{syncStatus.message}</span>
                       </div>
                     )}
+
+                    {/* HOSTING SYNC & AUTO-REFRESH CARD */}
+                    <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-blue-50/80 to-indigo-50/50 border border-blue-200/80 space-y-3.5">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-blue-100 pb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                          <h4 className="text-xs sm:text-sm font-bold text-slate-900 font-mono uppercase">
+                            Автообновление на хостинге для всех браузеров
+                          </h4>
+                        </div>
+                        <span className="text-[11px] font-semibold text-blue-700 bg-blue-100/70 border border-blue-200 px-2.5 py-0.5 rounded-full w-fit">
+                          Период: каждые 60 сек + при возврате на сайт
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-slate-600 leading-relaxed">
+                        Браузеры изолированы друг от друга: то, что вы сохранили в одном браузере, не видно в другом, пока сайт на хостинге не знает глобальный источник данных. Чтобы у <strong>всех посетителей отображалась одинаковая свежая информация</strong>:
+                      </p>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div className="p-3 rounded-xl bg-white border border-blue-200 shadow-xs flex flex-col justify-between gap-2.5">
+                          <div>
+                            <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5 mb-1">
+                              <FileSpreadsheet className="w-3.5 h-3.5 text-blue-600" />
+                              <span>Способ 1: Google Таблица (Авто)</span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 leading-normal">
+                              Скачайте файл конфигурации с вашей ссылкой и положите на хостинг рядом с <code>index.html</code>. Все браузеры будут сами каждые 60 секунд брать плагины из таблицы!
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => exportSiteConfigJsonFile(sheetUrl)}
+                            disabled={!sheetUrl}
+                            className="w-full py-2 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                            <span>Скачать site-config.json</span>
+                          </button>
+                        </div>
+
+                        <div className="p-3 rounded-xl bg-white border border-blue-200 shadow-xs flex flex-col justify-between gap-2.5">
+                          <div>
+                            <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5 mb-1">
+                              <Layers className="w-3.5 h-3.5 text-indigo-600" />
+                              <span>Способ 2: Файл данных (Без таблицы)</span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 leading-normal">
+                              Если вы добавили плагины через кнопку «+ Добавить плагин» в этом браузере, скачайте файл данных и закиньте в корень сайта на хостинге.
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={exportSiteDataJsonFile}
+                            className="w-full py-2 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                          >
+                            <FileDown className="w-3.5 h-3.5" />
+                            <span>Скачать site-data.json</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Step-by-step instruction */}
